@@ -15,7 +15,7 @@ export default {
     videoPlayer,
   },
   //子组件接收父组件(VideoList)
-  props: ['videoList', 'index'],
+  props: ['videoList', 'index', 'initialSlide'],
   setup(props) {
     const videoPlayer = ref(null)
     const playing = ref(true)
@@ -47,7 +47,7 @@ export default {
     }
     const autoPlayAction = () => {
       //自动播放第一个视频
-      if (props.index == 0) {
+      if (props.index == 0 && props.initialSlide === 0) {
         playerOptions.autoplay = true
       }
     }

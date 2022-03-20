@@ -17,20 +17,22 @@
         @doubleTap="doubleTap"
         @slideNextTransitionStart="slideNextTransitionStart"
         @slidePrevTransitionStart="slidePrevTransitionStart"
+        :initialSlide="swiperOption.initialSlide"
+        v-if="flag"
       >
         <!-- 幻灯内容 -->
         <!-- 循环输出 -->
         <swiper-slide v-for="(item, index) in videoList" :key="item.id">
           <div class="video-box">
             <!-- ref：节点 -->
-            <videos ref="videos" :videoList="item" :index="index"></videos>
+            <videos ref="videos" :videoList="item" :index="index" :initialSlide="swiperOption.initialSlide"></videos>
           </div>
           <div class="infobar-warp">
             <info-bar></info-bar>
           </div>
           <div class="right-warp">
             <!-- 接收RightBar.vue穿过来的方法 -->
-            <right-bar @changeCom="showCom(item.id)" @changeLike="changeLike"></right-bar>
+            <right-bar :video="item" @changeCom="showCom(item.id)" @changeLike="changeLike"></right-bar>
           </div>
           <div class="like-box" v-if="showLike">
             <div class="like"></div>
@@ -107,6 +109,7 @@ export default {
       swiperOption: {
         // 高度设置，占满设备高度
         height: window.innerHeight,
+        initialSlide: 2,
       },
       params: {
         page: 0,
@@ -115,6 +118,7 @@ export default {
       videoList: [],
       showLike: false,
       loading: false,
+      flag: false,
     }
   },
   methods: {
@@ -176,6 +180,12 @@ export default {
       }
     },
     slideNextTransitionStart() {
+      console.log('调用了下滑')
+      if (this.swiperOption.initialSlide !== 0) {
+        // 设置当前页码
+        this.page = this.swiperOption.initialSlide
+        this.swiperOption.initialSlide = 0
+      }
       this.page += 1
       this.nextVideo(this.page - 1)
       // 记住，this.page是1开头的
@@ -192,17 +202,12 @@ export default {
     },
     // 添加视频视频
     async setVideoList(params) {
-      // getVideoList(params).then((res) => {
-      //   if (res.length === 0) return
-      //   res.forEach((video) => {
-      //     this.videoList.push(video)
-      //   })
-      // })
       const result = await getVideoList(params)
       if (result.length === 0) return
       result.forEach((video) => {
         this.videoList.push(video)
       })
+      this.flag = true
     },
   },
   created() {

@@ -41,6 +41,7 @@ export default {
     const afterRead = (file) => {
       let formData = new FormData()
       formData.append('video', file.file)
+      console.log(file)
     }
     return {
       ...toRefs(dataList),

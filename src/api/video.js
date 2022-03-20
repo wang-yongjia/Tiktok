@@ -6,3 +6,9 @@ export const getVideoList = (params) => {
     url: `/video?page=${params.page}&rows=${params.rows}`,
   })
 }
+export const getVideoByUserId = (userId) => {
+  return request({
+    method: 'get',
+    url: `/user/video/${userId}`,
+  })
+}

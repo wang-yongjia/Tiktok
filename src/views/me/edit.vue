@@ -7,7 +7,7 @@
         <div class="avatar">
           <!-- <span class="iconfont icon-xiangji"></span> -->
           <van-uploader :before-read="beforeRead" :after-read="afterRead" accept="image/*" :max-count="1">
-            <van-image width="2rem" height="2rem" round fit="cover" position="center" src="http://localhost:8888/user/1/avatar" />
+            <van-image width="2rem" height="2rem" round fit="cover" position="center" :src="avatarUrl" />
           </van-uploader>
         </div>
         <p>点击更换头像</p>
@@ -56,6 +56,7 @@ export default {
       show: false,
       minDate: new Date(1922, 0, 1),
       maxDate: new Date(),
+      avatarUrl: useSessionStorage('user').avatar_url,
       formData: {
         email: useSessionStorage('user').email,
         name: useSessionStorage('user').name,

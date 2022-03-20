@@ -12,7 +12,7 @@
       <van-icon name="chat-o" size="1.1rem" color="white" />
       <p>1w</p>
     </div>
-    <div class="item-icon">
+    <div class="item-icon" @touchstart.stop="dowloadVideo">
       <van-icon name="down" size="1.1rem" color="white" />
     </div>
     <div class="rightbar-item">
@@ -29,15 +29,18 @@
 <script>
 import { reactive, toRefs } from 'vue'
 export default {
-  // VideoList.vue传过来的
-  props: ['showComment'],
+  props: {
+    video: {
+      type: Object,
+    },
+  },
   setup(props, { emit }) {
     const dataList = reactive({
       showLike: false,
       isLike: false,
     })
     const showCom = () => {
-      emit('changeCom', props.showComment)
+      emit('changeCom')
     }
     const changeLike = () => {
       dataList.isLike = !dataList.isLike
@@ -45,10 +48,29 @@ export default {
         emit('changeLike')
       }
     }
+    const dowloadVideo = () => {
+      // 后续改为系统变量
+      const url = `http://localhost:8888/video/dowload/${props.video.filename}`
+      window.open(url)
+      // const el = document.createElement('a')
+      // el.style.display = 'none'
+      // el.setAttribute('target', '_blank')
+      // /**
+      //  * download的属性是HTML5新增的属性
+      //  * href属性的地址必须是非跨域的地址，如果引用的是第三方的网站或者说是前后端分离的项目(调用后台的接口)，这时download就会不起作用。
+      //  * 此时，如果是下载浏览器无法解析的文件，例如.exe,.xlsx..那么浏览器会自动下载，但是如果使用浏览器可以解析的文件，比如.txt,.png,.pdf....浏览器就会采取预览模式
+      //  * 所以，对于.txt,.png,.pdf等的预览功能我们就可以直接不设置download属性(前提是后端响应头的Content-Type: application/octet-stream，如果为application/pdf浏览器则会判断文件为 pdf ，自动执行预览的策略)
+      //  */
+      // el.href = url
+      // document.body.appendChild(el)
+      // el.click()
+      // document.body.removeChild(el)
+    }
     return {
       ...toRefs(dataList),
       showCom,
       changeLike,
+      dowloadVideo,
     }
   },
 }
