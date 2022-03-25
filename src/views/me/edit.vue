@@ -15,11 +15,11 @@
       <van-form @submit="onSubmit" @failed="onFailed" :show-error="true">
         <van-cell-group :border="false">
           <!-- 输入任意文本 -->
-          <van-field v-model="formData.email" label="邮箱" name="email" size="large" is-link placeholder="请输入邮箱号码" readonly :rules="[{ required: true }]" />
+          <van-field v-model="formData.email" label="邮箱" name="email" size="large" placeholder="请输入邮箱号码" readonly :rules="[{ required: true }]" />
           <van-field v-model="formData.name" label="昵称" name="name" size="large" is-link placeholder="请输入昵称" autocomplete="off" :rules="[{ required: true }]" />
           <van-field v-model="formData.sex" label="性别" size="large" name="sex" is-link readonly @click="showPickerSex = true" />
           <van-field v-model="birthday" label="生日" size="large" name="birthday" is-link readonly @click="show = true" />
-          <van-field v-model="formData.userId" label="抖音号" name="userId" size="large" is-link readonly />
+          <van-field v-model="formData.userId" label="抖音号" name="userId" size="large" readonly />
           <van-field v-model="formData.introduction" label="简介" name="introduction" autosize clear-trigger type="textarea" maxlength="50" show-word-limit size="large" autocomplete="off" placeholder="请输入简介" />
         </van-cell-group>
         <div class="code-btn">
@@ -30,7 +30,7 @@
         <van-picker :columns="columns" @confirm="onConfirmSex" @cancel="showPickerSex = false" />
       </van-popup>
       <van-popup v-model:show="show" position="bottom">
-        <van-datetime-picker v-model="formData.birthday" type="date" title="选择生日" :min-date="minDate" :max-date="maxDate" @confirm="onConfirm" @cancel="show = false" />
+        <van-datetime-picker v-model="currentDate" type="date" title="选择生日" :min-date="minDate" :max-date="maxDate" @confirm="onConfirm" @cancel="show = false" />
       </van-popup>
     </div>
   </div>
@@ -67,6 +67,7 @@ export default {
       },
     })
     let birthday = computed(() => (dataList.formData.birthday ? moment(dataList.formData.birthday).format('YYYY-MM-DD') : ''))
+    let currentDate = birthday.value ? moment(birthday.value, 'YYYY-MM-DD')._d : new Date()
     const onConfirmSex = (value) => {
       dataList.formData.sex = value
       dataList.showPickerSex = false
@@ -113,6 +114,7 @@ export default {
     return {
       ...toRefs(dataList),
       birthday,
+      currentDate,
       onConfirmSex,
       onConfirm,
       beforeRead,

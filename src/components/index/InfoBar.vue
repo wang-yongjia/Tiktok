@@ -1,11 +1,15 @@
 <template>
   <div class="info-bar">
-    <div class="infobar-item"><span>@测试员一号</span></div>
-    <div class="infobar-item"><span>测试文本，使用vuecli实现抖音App</span></div>
+    <div class="infobar-item">
+      <span>@ {{ video.user.name }}</span>
+    </div>
+    <div class="infobar-item">
+      <span>{{ video.video_desc }}</span>
+    </div>
     <div class="infobar-item music-item">
       <span class="iconfont icon-yinfu"></span>
       <div class="music-name">
-        <span data-text="测试员1号原声">测试员1号原声</span>
+        <span> 0基础，学IT，月薪过万，就来黑马程序员</span>
       </div>
     </div>
   </div>
@@ -13,6 +17,11 @@
 
 <script>
 export default {
+  props: {
+    video: {
+      type: Object,
+    },
+  },
   setup(props) {},
 }
 </script>
@@ -30,8 +39,6 @@ export default {
   margin-right: 5px;
 }
 .music-item {
-  /* width:200px; */
-  /* border:1px solid red; */
   display: flex;
 }
 .music-name {

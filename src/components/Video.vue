@@ -1,11 +1,15 @@
 <template>
   <div class="video">
-    <van-image v-for="(item, index) in videoList" :key="index" width="33.3%" height="4rem" fit="cover" position="center" :src="avatarUrl" @click="play(item)" />
+    <van-list :finished="finished" finished-text="没有更多了">
+      <van-image v-for="(item, index) in videoList" :key="index" width="33.3%" height="4rem" fit="cover" position="center" :src="item.preview_url" @click="play(item, index)" />
+    </van-list>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { reactive, ref, toRefs } from 'vue'
+import { useSessionStorage } from '@/hooks/sessionStorage'
+import { useRouter } from 'vue-router'
 export default {
   props: {
     videoList: {
@@ -13,11 +17,23 @@ export default {
     },
   },
   setup(props) {
-    const avatarUrl = ref('http://localhost:8888/user/avatar/1647707576639.png')
-    const play = (video) => {
-      console.log('play', video)
+    const router = useRouter()
+    const dataList = reactive({
+      finished: true,
+    })
+    const play = (video, index) => {
+      useSessionStorage('videoList', props.videoList)
+      router.push({
+        path: '/video',
+        query: {
+          initialSlide: index,
+        },
+      })
     }
-    return { avatarUrl, play }
+    return {
+      ...toRefs(dataList),
+      play,
+    }
   },
 }
 </script>
@@ -27,5 +43,8 @@ export default {
   border: 1px solid white;
   border-top: 0;
   vertical-align: top;
+}
+/deep/.van-list {
+  margin-bottom: var(--van-tabbar-height);
 }
 </style>

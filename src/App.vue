@@ -6,18 +6,17 @@
       </keep-alive>
       <component :is="Component" v-if="!$route.meta.keepAlive" :key="$route.path" />
     </router-view>
-    <!-- <router-view></router-view> -->
+    <Loading></Loading>
   </div>
 </template>
 <script>
+import Loading from '@/components/Loading.vue'
 export default {
-  setup(props) {
-    const arr = ['Home']
-
-    return {
-      arr,
-    }
+  name: 'App',
+  components: {
+    Loading,
   },
+  setup(props) {},
 }
 </script>
 <style lang="less">

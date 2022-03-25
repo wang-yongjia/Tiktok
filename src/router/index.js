@@ -1,15 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-const Home = () => import('../views/Home.vue')
 
-const Index = () => import('../views/index/Index.vue')
-const Friend = () => import('../views/friend/Friend')
-const Sign = () => import('../views/Sign.vue')
-const Login = () => import('@/views/Login.vue')
-const Register = () => import(/* webpackChunkName: "register" */ '@/views/Register')
-const toast = () => import('../components/toast/toast.vue')
-const me = () => import('../views/me/me.vue')
-const edit = () => import('../views/me/edit.vue')
-const msg = () => import('../views/msg/msg.vue')
 const routes = [
   {
     path: '/',
@@ -17,8 +7,8 @@ const routes = [
   },
   {
     path: '/index',
-    name: 'index',
-    component: Index,
+    name: 'Index',
+    component: () => import('@/views/index/Index'),
     meta: {
       keepAlive: true,
     },
@@ -26,42 +16,69 @@ const routes = [
   {
     path: '/friend',
     name: 'Friend',
-    component: Friend,
+    component: () => import('@/views/friend/Friend'),
+    meta: {
+      keepAlive: true,
+    },
+  },
+  {
+    path: '/release',
+    name: 'Release',
+    component: () => import('@/views/release/Release'),
   },
   {
     path: '/me',
     name: 'Me',
-    component: me,
+    component: () => import('@/views/me/me'),
+    meta: {
+      keepAlive: true,
+    },
   },
   {
     path: '/msg',
     name: 'Msg',
-    component: msg,
-  },
-  {
-    path: '/sign',
-    name: 'Sign',
-    component: Sign,
+    component: () => import('@/views/msg/msg'),
+    meta: {
+      keepAlive: true,
+    },
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () => import('@/views/Login'),
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register,
-  },
-  {
-    path: '/toast',
-    name: 'Toast',
-    component: toast,
+    component: () => import('@/views/Register'),
   },
   {
     path: '/edit',
     name: 'Edit',
-    component: edit,
+    component: () => import('@/views/me/edit'),
+  },
+  {
+    path: '/video',
+    name: 'Video',
+    component: () => import('@/views/video/Video'),
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: () => import('@/views/home/Home'),
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/search/Search'),
+    meta: {
+      keepAlive: true,
+    },
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: () => import('@/views/chat/Chat'),
   },
 ]
 

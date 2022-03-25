@@ -1,16 +1,16 @@
 <template>
   <div class="right-bar">
     <div class="rightbar-item">
-      <van-image round width="1.8rem" height="1.8rem" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-      <van-icon name="add" size="0.6rem" />
+      <van-image round fit="cover" position="center" width="1.8rem" height="1.8rem" :src="video.user.avatar_url" @touchstart.stop="home" />
+      <van-icon name="add" size="0.6rem" v-if="!video.isFollow && video.user.id !== userId && userId !== 0" />
     </div>
     <div class="item-icon">
       <van-icon name="like" @touchstart.stop="changeLike" :class="{ active: isLike, deactive: !isLike }" size="1.1rem" />
-      <p>1w</p>
+      <p>{{ videoLike }}</p>
     </div>
     <div class="item-icon" @touchstart.stop="showCom">
       <van-icon name="chat-o" size="1.1rem" color="white" />
-      <p>1w</p>
+      <p>{{ video.comment }}</p>
     </div>
     <div class="item-icon" @touchstart.stop="dowloadVideo">
       <van-icon name="down" size="1.1rem" color="white" />
@@ -28,6 +28,10 @@
 
 <script>
 import { reactive, toRefs } from 'vue'
+import { videoLike, videoUnlike } from '@/api/user'
+import { useRouter } from 'vue-router'
+import { useSessionStorage } from '@/hooks/sessionStorage'
+
 export default {
   props: {
     video: {
@@ -35,17 +39,30 @@ export default {
     },
   },
   setup(props, { emit }) {
+    const router = useRouter()
     const dataList = reactive({
       showLike: false,
-      isLike: false,
+      isLike: props.video.isLike ? true : false,
+      videoLike: props.video.video_like,
+      userId: useSessionStorage('user') ? useSessionStorage('user').id : 0,
     })
     const showCom = () => {
-      emit('changeCom')
+      // 不加延迟弹出层会自动关闭，不清楚为什么
+      setTimeout(() => {
+        emit('changeCom')
+      }, 150)
     }
-    const changeLike = () => {
+    const changeLike = async () => {
+      const userId = useSessionStorage('user').id
+      const videoId = props.video.id
       dataList.isLike = !dataList.isLike
       if (dataList.isLike) {
+        const result = await videoLike({ userId, videoId })
+        dataList.videoLike++
         emit('changeLike')
+      } else {
+        const result = await videoUnlike({ userId, videoId })
+        dataList.videoLike--
       }
     }
     const dowloadVideo = () => {
@@ -66,11 +83,25 @@ export default {
       // el.click()
       // document.body.removeChild(el)
     }
+    const home = () => {
+      if (props.video.user.id === dataList.userId) {
+        router.push('/me')
+      } else {
+        router.push({
+          path: '/home',
+          query: {
+            userId: props.video.user.id,
+            isFollow: props.video.isFollow,
+          },
+        })
+      }
+    }
     return {
       ...toRefs(dataList),
       showCom,
       changeLike,
       dowloadVideo,
+      home,
     }
   },
 }
@@ -122,6 +153,10 @@ export default {
   top: 1.5rem;
   color: red;
   font-weight: 900;
+}
+/deep/.van-image {
+  border: 2px solid white;
+  box-sizing: border-box;
 }
 .item-icon {
   height: 65px;

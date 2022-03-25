@@ -1,6 +1,6 @@
 <template>
   <div class="sign">
-    <Header rightText="注册" :routerBack="true" @onClickRight="onClickRight"></Header>
+    <Header rightText="注册" @onClickLeft="onClickLeft" @onClickRight="onClickRight"></Header>
     <div class="sign-content">
       <div class="des">
         <h2>邮箱密码登录</h2>
@@ -66,14 +66,17 @@ export default {
     const onFailed = (errorInfo) => {
       console.log('failed', errorInfo)
     }
+    const onClickLeft = () => {
+      router.push('/index')
+    }
     const onClickRight = () => {
-      console.log('点击了帮助')
       router.push('/register')
     }
     return {
       ...toRefs(dataList),
       onSubmit,
       onFailed,
+      onClickLeft,
       onClickRight,
     }
   },

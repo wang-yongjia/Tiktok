@@ -1,26 +1,16 @@
 <template>
   <div class="friend">
-    <user-header title="朋友" rightText="发起聊天" @onClickRight="onClickRight"></user-header>
+    <user-header title="朋友"></user-header>
     <div class="friedn-warp">
-      <van-search v-model="searchValue" placeholder="请输入搜索关键词" background="transparent" />
-      <van-swipe-cell>
-        <van-card desc="描述信息描述信息描述信息描述信息描述信息" title="heart" centered class="goods-card">
+      <van-search v-model="searchValue" placeholder="请输入搜索关键词" background="transparent" @search="onSearch" autocomplete="off" />
+      <van-swipe-cell v-for="item in userList" :key="item.id">
+        <van-card :desc="item.introduction" :title="item.name" centered class="goods-card" @click="home(item.id)">
           <template #thumb>
-            <van-image width="1.5rem" height="1.5rem" round fit="cover" position="center" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+            <van-image width="1.5rem" height="1.5rem" round fit="cover" position="center" style="border: 2px solid white" :src="item.avatar_url" />
           </template>
         </van-card>
         <template #right>
-          <van-button square text="删除" type="danger" class="delete-button" />
-        </template>
-      </van-swipe-cell>
-      <van-swipe-cell>
-        <van-card desc="描述信息描述信息描述信息描述信息描述信息" title="商品标题" centered class="goods-card">
-          <template #thumb>
-            <van-image width="1.5rem" height="1.5rem" round fit="cover" position="center" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-          </template>
-        </van-card>
-        <template #right>
-          <van-button square text="删除" type="danger" class="delete-button" />
+          <van-button square text="取关" type="danger" class="delete-button" />
         </template>
       </van-swipe-cell>
     </div>
@@ -32,22 +22,52 @@
 import userHeader from '@/components/header/userHeader'
 import TabBar from '@/components/TabBar'
 import { reactive, toRefs } from 'vue'
+import { getMyFollow, getMyFollowBySearch } from '@/api/user'
+import { useSessionStorage } from '@/hooks/sessionStorage'
+import { useRouter } from 'vue-router'
+import { Toast } from 'vant'
+
 export default {
   components: {
     userHeader,
     TabBar,
   },
   setup(props) {
+    const router = new useRouter()
     const dataList = reactive({
       searchValue: '',
+      userId: useSessionStorage('user').id,
+      userList: [],
     })
-    const onClickRight = () => {
-      console.log('onClickRight')
+    // 跳转主页
+    const home = (toUserId) => {
+      router.push({
+        path: '/home',
+        query: {
+          userId: toUserId,
+          isFollow: true,
+        },
+      })
     }
-
+    const onSearch = (val) => {
+      console.log(val)
+      if (val.trim().length === 0) {
+        init()
+      }
+      getMyFollowBySearch({ userId: dataList.userId, searchValue: val }).then((res) => {
+        dataList.userList = res
+      })
+    }
+    const init = () => {
+      getMyFollow(dataList.userId).then((res) => {
+        dataList.userList = res
+      })
+    }
+    init()
     return {
       ...toRefs(dataList),
-      onClickRight,
+      home,
+      onSearch,
     }
   },
 }

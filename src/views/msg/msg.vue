@@ -1,128 +1,106 @@
 <template>
-  <div class="message">
-    <user-header title="消息" :hasRight="true" rightText="发起聊天" @onClickRight="onClickRight"></user-header>
-    <div class="msg-warp">
-      <div class="msg-nav">
-        <div class="msg-nav-item">
-          <div class="icon-box"><span></span></div>
-          <p>粉丝</p>
-        </div>
-        <div class="msg-nav-item">
-          <div class="icon-box"><span></span></div>
-          <p>赞</p>
-        </div>
-        <div class="msg-nav-item">
-          <div class="icon-box"><span></span></div>
-          <p>@我的</p>
-        </div>
-        <div class="msg-nav-item">
-          <div class="icon-box"><span></span></div>
-          <p>评论</p>
-        </div>
-      </div>
-
-      <div class="msg-list-box">
-        <div class="msg-list">
-          <img src="../../assets/img/xxx.jpeg" />
-          <div class="user-des">
-            <div class="top">
-              <span>抖音小助手</span>
-              <span>13:00</span>
-            </div>
-            <div class="top top-msg">
-              <span>欢迎来到抖音</span>
-              <span class="no-see"></span>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="friend">
+    <user-header title="消息"></user-header>
+    <div class="friedn-warp">
+      <van-card v-for="item in userList" :key="item.id" :desc="item.introduction" :title="item.name" centered class="goods-card" @click="toChat(item.id)">
+        <template #thumb>
+          <van-image width="1.5rem" height="1.5rem" round fit="cover" position="center" style="border: 2px solid white" :src="item.avatar_url" @click.stop="home(item.id)" />
+        </template>
+      </van-card>
     </div>
+    <tab-bar></tab-bar>
   </div>
-  <tab-bar></tab-bar>
 </template>
 
 <script>
 import userHeader from '@/components/header/userHeader'
 import TabBar from '@/components/TabBar'
+import { reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
+import { getMutualFollow } from '@/api/user'
+import { useSessionStorage } from '@/hooks/sessionStorage'
+
 export default {
   components: {
     userHeader,
     TabBar,
   },
   setup(props) {
-    const onClickRight = () => {
-      console.log('onClickRight')
+    const router = new useRouter()
+    const dataList = reactive({
+      userId: useSessionStorage('user').id,
+      userList: [],
+    })
+    // 跳转聊天界面
+    const toChat = (toUserId) => {
+      router.push({
+        path: '/chat',
+        query: {
+          toUserId,
+        },
+      })
     }
-
+    // 跳转主页
+    const home = (toUserId) => {
+      router.push({
+        path: '/home',
+        query: {
+          userId: toUserId,
+          isFollow: true,
+        },
+      })
+    }
+    const init = () => {
+      getMutualFollow(dataList.userId).then((res) => {
+        dataList.userList = res
+      })
+    }
+    init()
     return {
-      onClickRight,
+      ...toRefs(dataList),
+      toChat,
+      home,
     }
   },
 }
 </script>
 
 <style lang="less" scoped>
-.message {
+.friend {
   height: 100%;
   background-color: #101821;
-  font-size: 16px;
 }
-.msg-warp {
-  font-size: 16px;
-  padding: 0 20px;
-  color: #ffffff;
-  background-color: #101821;
-  /* height:-webkit-fill-available; */
-  // height: 1000px;
+// 滑动样式
+.goods-card {
+  margin: 0;
+  background-color: transparent;
 }
-.msg-nav {
-  padding: 20px 5px;
-  display: flex;
-  justify-content: space-between;
+.delete-button {
+  height: 100%;
 }
-.msg-nav-item {
-  text-align: center;
-  width: 60px;
-}
-.icon-box {
-  height: 60px;
-  width: 60px;
-  background-color: #ff4074;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-.msg-list-box {
-  padding-top: 30px;
-}
-.msg-list {
-  display: flex;
-  padding: 10px 0;
-  /* justify-content: space-between; */
-}
-.msg-list img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-.user-des {
-  flex: 1;
-  height: 60px;
-}
-.user-des .top {
-  font-size: 14px;
-  margin-left: 10px;
-  display: flex;
-  justify-content: space-between;
-  line-height: 25px;
-}
-.top-msg {
-  color: #666;
-  align-items: center;
-}
-.no-see {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #face15;
+/deep/.van-card {
+  height: 80px;
+  .van-card__header {
+    height: 100%;
+    .van-card__thumb {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 80px;
+    }
+    .van-card__content {
+      min-height: 0;
+      border-bottom: 1px solid #555555;
+      .van-card__title {
+        color: white;
+        font-size: 16px;
+      }
+      .van-card__desc {
+        font-size: 14px;
+        transform: translateY(10px);
+      }
+    }
+  }
 }
 </style>
