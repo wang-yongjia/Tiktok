@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs } from 'vue'
+import { onActivated, reactive, ref, toRefs } from 'vue'
 import VideoList from '@/components/index/VideoList'
 import { getVideoList, getFollowVideoById } from '@/api/video'
 import { useSessionStorage } from '@/hooks/sessionStorage'
@@ -59,6 +59,10 @@ export default {
         if (recommend.value) recommend.value.tap()
       }
     }
+    // 活跃时播放当前dataList.active的视频
+    onActivated(() => {
+      changeTab(dataList.active)
+    })
     const setVideoList = async (params) => {
       const result = await getVideoList(dataList.params)
       if (result.length === 0) return

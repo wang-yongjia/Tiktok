@@ -166,9 +166,9 @@ export default {
     // console.log(this.videoList)
     this.swiperOption.initialSlide = this.initialSlide
   },
+  // 在这里调用会导致两边视频同时播放，改到topBar组件调用
   activated() {
-    // this.tap()
-    this.playAction(this.page - 1)
+    // this.playAction(this.page - 1)
   },
   deactivated() {
     // this.tap()
