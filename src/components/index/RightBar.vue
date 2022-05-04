@@ -1,8 +1,8 @@
 <template>
   <div class="right-bar">
     <div class="rightbar-item">
-      <van-image round fit="cover" position="center" width="1.8rem" height="1.8rem" :src="video.user.avatar_url" @touchstart.stop="home" />
-      <van-icon name="add" size="0.6rem" v-if="!video.isFollow && video.user.id !== userId && userId !== 0" />
+      <van-image round fit="cover" position="center" width="1.8rem" height="1.8rem" :src="video.user.avatar_url" @touchstart.stop="home(video.user.id, video.isFollow)" />
+      <van-icon name="add" size="0.6rem" v-if="!video.isFollow && video.user.id !== userId && userId !== 0" @touchstart.stop="home(video.user.id, video.isFollow)" />
     </div>
     <div class="item-icon">
       <van-icon name="like" @touchstart.stop="changeLike" :class="{ active: isLike, deactive: !isLike }" size="1.1rem" />
@@ -15,7 +15,7 @@
     <div class="item-icon" @touchstart.stop="dowloadVideo">
       <van-icon name="down" size="1.1rem" color="white" />
     </div>
-    <div class="rightbar-item">
+    <div class="rightbar-item" @touchstart.stop>
       <div class="right-music">
         <img src="../../assets/img/xxx.jpeg" />
       </div>
@@ -83,15 +83,15 @@ export default {
       // el.click()
       // document.body.removeChild(el)
     }
-    const home = () => {
-      if (props.video.user.id === dataList.userId) {
+    const home = (toUserId, isFollow) => {
+      if (toUserId === dataList.userId) {
         router.push('/me')
       } else {
         router.push({
           path: '/home',
           query: {
-            userId: props.video.user.id,
-            isFollow: props.video.isFollow,
+            userId: toUserId,
+            isFollow: isFollow,
           },
         })
       }
@@ -151,7 +151,7 @@ export default {
 /deep/.van-icon-add {
   position: absolute;
   top: 1.5rem;
-  color: red;
+  color: #fe2c55;
   font-weight: 900;
 }
 /deep/.van-image {

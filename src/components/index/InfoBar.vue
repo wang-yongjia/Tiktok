@@ -1,7 +1,7 @@
 <template>
-  <div class="info-bar">
+  <div class="info-bar" @touchstart.stop>
     <div class="infobar-item">
-      <span>@ {{ video.user.name }}</span>
+      <span @click="home(video.user.id, video.isFollow)">@ {{ video.user.name }}</span>
     </div>
     <div class="infobar-item">
       <span>{{ video.video_desc }}</span>
@@ -16,13 +16,35 @@
 </template>
 
 <script>
+import { useSessionStorage } from '@/hooks/sessionStorage'
+import { useRouter } from 'vue-router'
 export default {
   props: {
     video: {
       type: Object,
     },
   },
-  setup(props) {},
+  setup(props) {
+    const router = useRouter()
+    const home = (toUserId, isFollow) => {
+      let userId = useSessionStorage('user') ? useSessionStorage('user').id : 0
+      if (toUserId === userId) {
+        router.push('/me')
+      } else {
+        router.push({
+          path: '/home',
+          query: {
+            userId: toUserId,
+            isFollow: isFollow,
+          },
+        })
+      }
+    }
+
+    return {
+      home,
+    }
+  },
 }
 </script>
 

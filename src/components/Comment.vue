@@ -105,13 +105,14 @@ export default {
       replyInput.value.focus()
     }
     const commentLike = async (comment, isLike, index, index2) => {
-      console.log(comment, isLike, index, index2)
+      // console.log(comment, isLike, index, index2)
+      // console.log(typeof index2)
       const userId = comment.user.id
       const commentId = comment.id
       if (isLike) {
         // 取消点赞
         const result = await commentUnlike({ userId, commentId })
-        if (index2) {
+        if (typeof index2 !== 'undefined') {
           dataList.commentList[index].replyComment[index2].comment_like--
         } else {
           dataList.commentList[index].comment_like--
@@ -119,13 +120,13 @@ export default {
       } else {
         // 点赞
         const result = await createCommentLike({ userId, commentId })
-        if (index2) {
+        if (typeof index2 !== 'undefined') {
           dataList.commentList[index].replyComment[index2].comment_like++
         } else {
           dataList.commentList[index].comment_like++
         }
       }
-      if (index2) {
+      if (typeof index2 !== 'undefined') {
         dataList.commentList[index].replyComment[index2].isLike = !dataList.commentList[index].replyComment[index2].isLike
       } else {
         dataList.commentList[index].isLike = !dataList.commentList[index].isLike

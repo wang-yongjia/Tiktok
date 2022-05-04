@@ -10,7 +10,8 @@
       </van-tab>
       <template #nav-left>
         <div class="nav-icon">
-          <van-icon name="video-o" color="white" size="0.8rem" />
+          <!-- <van-icon name="video-o" color="white" size="0.8rem" /> -->
+          <van-icon name="wap-home-o" color="white" size="0.8rem" @click="$router.push('/me')" />
         </div>
       </template>
       <template #nav-right>

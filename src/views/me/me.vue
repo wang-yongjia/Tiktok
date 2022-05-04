@@ -9,15 +9,16 @@
       <div class="me-content">
         <div class="info">
           <van-image width="2.5rem" height="2.5rem" round fit="cover" position="center" :src="user.avatar_url" style="border: 2px solid white" @click="showAvatar(user.avatar_url)" />
-          <router-link to="/edit"><button class="btn">编辑资料</button></router-link>
-          <button class="btn">+朋友</button>
+          <router-link to="/edit"><button>编辑资料</button></router-link>
+          <!-- <button class="btn">+朋友</button> -->
+          <button @click="showPassword = true">修改密码</button>
         </div>
         <div class="des">
           <h2>{{ user.name }}</h2>
           <span>抖音号：{{ user.id }}</span>
           <p>{{ user.introduction }}</p>
         </div>
-        <div class="user-tag">
+        <!-- <div class="user-tag">
           <span>18岁</span>
           <span>中国-北京</span>
           <span>+添加学校等标签</span>
@@ -26,7 +27,7 @@
           <span><a href="#">20w</a>获赞</span>
           <span><a href="#">30w</a>关注</span>
           <span><a href="#">40w</a>粉丝</span>
-        </div>
+        </div> -->
       </div>
 
       <div class="me-tab">
@@ -37,7 +38,7 @@
           <van-tab title="喜欢">
             <Video :videoList="videoLikeList" v-if="videoLikeList.length > 0"></Video>
           </van-tab>
-          <van-tab title="动态">动态 </van-tab>
+          <!-- <van-tab title="动态">动态 </van-tab> -->
         </van-tabs>
       </div>
     </div>
